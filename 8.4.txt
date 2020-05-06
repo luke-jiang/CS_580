@@ -1,3 +1,10 @@
+Q8.4:
+For any edge e in any graph G, let G \ e denote the graph obtained by deleting e from G.
+Suppose we are given a graph G and two vertices s and t. The replacement paths problem
+asks us to compute the shortest-path distance from s to t in G \ e, for every edge e of G.
+The output is an array of E distances, one for each edge of G.
+
+A:
 (a)
 run Dijkstra's algorithm to find the shortest path E, but with the following
 modification:
