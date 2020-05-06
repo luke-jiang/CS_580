@@ -1,0 +1,104 @@
+
+== 5. Single-Source Shortest Paths ==
+- unweighted graph: BFS
+  * BFS processes vertices in same order as layer-search.
+  * BFS labels each vertex w/ the distance from s.
+  * O(m)
+- weighted graphs: Dijkstra
+  * use Fibonacci Heaps:
+    ** insert(k, p)
+    ** remove-min()
+    ** decrease(k, p)
+  * O(m + nlogn)
+- Bellman-Ford:
+  * recurrence:
+    dist(v, k) := shortest length of any s to v walk with <= k edges.
+    dist(s, 0) = 0
+    dist(v, 0) = INF
+    dist(v, k) = min {
+      dist(v, k-1)
+      min { forall (u, v), dist(u, k-1) + W(u, w)}
+    }
+  * O(m) per layer; O(n) layers; total: O(mn)
+
+
+== 6. Shortest Path II ==
+- negative edge:
+  * breaks Dijkstra's algorithm.
+  * negative cycles have no well-defined shortest path.
+  * recurrence:
+    dist(v, k) := shortest length of any s to v walk w/ <= k edges.
+    dist(s, 0) = 0
+    dist(v, 0) = INF
+    dist(v, k) = min {
+      dist(v, k-1),
+      min { forall (u, v), dist(u, k-1) + W(u, v) }
+    }
+  * O(m) per layer; O(n) layers; total: O(mn)
+  * detect negative cycle:
+    exists v n, dist(v, 2n) < dist(v, n)
+- APSP:
+  * all-pair shortest paths.
+  * assume no negative cycles.
+  * recurrence1:
+    dist(u, v, k) := shortest length of any u to v walk w/ <= k edges.
+    forall u, dist(u, u, 0) = 0
+    forall u != v, dist(u, v, 0) = INF
+    dist(u, v, k) = min {
+      dist(u, v, k-1)
+      min { forall (w, v), dist(u, w, k-1) + W(w, v) }
+    }
+  * O(mn) per layer; O(n) layers; total: O(mn^2)
+  * recurrence2 (doubling trick):
+    dist(u, v, k) = min {
+      dist(u, v, k-1)
+      min { forall w, dist(u, w, k/2) + dist(w, v, k/2) }
+    }
+  * O(logn) layers; O(n^3) layer; total: O(n^3 logn)
+  * recurrence3 (Floyd-Warshall):
+    number the vertices v_1, v_2, ..., v_n
+    a path `passes through` a vertex if if enters and leaves the vertex.
+    dist(u, v, k) := shortest length of any u to v that passes through only vertices
+      numbered at most k.
+    dist(v, v, 0) = 0
+    dist(u, v, 0) = if (u, v) in E then W(u, v) else INF
+    dist(u, v, k) = min {
+      dist(u, v, k/2)
+      dist(u, w_k, k-1) + dist(w_k, v, k-1)
+    }
+  * O(n^3) total time
+
+== 7. Dynamic Programming ==
+- minimum edit distance:
+  * three operations: insert / delete / replace
+  * find minimum number of operations to transform a string s to another string s'.
+  * recurrence:
+    ED(i, j) := edit distance between A[i, m] and B[j, n]
+    eventually return ED(1, 1)
+    ED(i, j) =
+      if i > m && j > n:      0
+      if i <= m && j > n:     ED(i+1, j) + 1
+      if i > m && j <= n:     ED(i, j+1) + 1
+      if A[i] != B[j]:
+        1 + min { ED(i+1, j), ED(i, j+1), ED(i+1, j+1) }
+      if A[i] == B[j]:
+        min { 1 + ED(i+1, j), 1 + ED(i, j+1), ED(i+1, j+1) }
+  * O(mn) subproblems, O(1) per subproblem, O(mn) in total.
+
+== 8. Dynamic Programming & Graphs ==
+- longest path in DAG:
+  * consider vertices in topological order
+  * recurrence:
+    LP(i) := length of longest path from s to v_i
+    LP(i) = if v_i is a sink then 1 else
+      1 + max { forall (v_i, v_j), LP(j) }
+  * O(m + n)
+- number of shortest paths on Unweighted Graph:
+  * first solve in DAGs, then reduce to DAGs.
+  * tight edges: edges on a shortest path.
+  * use BFS to find all tight edges E'.
+  * G'=(E', V) is a DAG
+  * recurrence:
+    #SP(i) := number of shortest paths from t to i in a DAG
+    #SP(s) = 1
+    #SP(v) = 1 + sum {forall (vj, vi) where dist(s, vj) = dist(s, vi) + 1,  #SP(j)}
