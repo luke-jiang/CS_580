@@ -1,0 +1,7 @@
+run Dijkstra in both G and H, get shortest paths g and h.
+let g-h denotes set of edges that in g but not in h.
+foreach edge (u, v) in (g-h):
+  let path l be the path from u to v in h.
+  the weight of l is W(l)
+  improvement = W(l) - W(u, v)
+keep track of the mmaximum improvement.

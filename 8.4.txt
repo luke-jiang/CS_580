@@ -1,0 +1,11 @@
+(a)
+run Dijkstra's algorithm to find the shortest path E, but with the following
+modification:
+  instead of keeping one pred label, keep two pred labels (pred1 and pred2),
+  where pred2 points to the predecessor of second shortest path from s.
+  consider all vertices in the reverse oder in path E.
+    if the vertex doesn't have pred2, then the result is INF.
+    else, suppose the pred2 label is v'. all vertices in path(v', v)
+    has result v'.dist + W(v', v)
+
+(b)

@@ -1,0 +1,6 @@
+similar to 8.12, but define the recurrence relation as this:
+num(n) := number of shortest paths from s to n.
+num(s) = 0
+num(v) = forall (u, v), sum(num(u))
+
+return num(t) as result

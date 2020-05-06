@@ -1,0 +1,8 @@
+
+call an edge (u, v) tight if dist(u) + W(u, v) = dist(v)
+remove all non-tight edges from G.
+best(v) := distance from s to v in the best path from s to v.
+best(s) = 0
+best(v) = forall (u, v), min (best(u) + 1)
+
+track the best edge from s to t by select the neighbor with lowest best number.

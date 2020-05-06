@@ -1,0 +1,11 @@
+(a)
+  Dijkstra's algorithm takes O(m + nlogn) time to run
+(b)
+  1. run DFS from the root to find all back edges (edges pointing back to the root).
+  2. remove the back edges from the looped tree to get T'.
+  3. run DFS from u in T' to see if there exists a path (u, v) in T'.
+     if found, then the path (u, v) is the shortest path.
+  4. else, shortest path = shortest_path(u, s) + path(s, v).
+  5. run BFS w/ weight to find shortest path from (u, s).
+
+  overall runtime: O(m + n)
