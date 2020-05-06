@@ -1,3 +1,13 @@
+Q8.13:
+Describe and analyze an algorithm to determine the number of shortest
+paths from a source vertex s to a target vertex t in an arbitrary directed
+graph G with weighted edges. You may assume that all edge weights are
+positive and that all necessary arithmetic operations can be performed in
+O(1) time. [Hint: Compute shortest path distances from s to every other
+vertex. Throw away all edges that cannot be part of a shortest path from s
+to another vertex. What’s left?]
+
+A:
 similar to 8.12, but define the recurrence relation as this:
 num(n) := number of shortest paths from s to n.
 num(s) = 0

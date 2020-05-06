@@ -1,10 +1,11 @@
 Q8.12:
-Although we typically speak of “the” shortest path between two nodes, single graph
-could contain several minimum-length paths with the same endpoints.
-Even for weighted graphs, it is often desirable to choose a minimum-weight path with the fewest edges;
-call this a best path from s to t. Suppose we are given a directed graph G with positive
-edge weights and a source vertex s in G. Describe and analyze an algorithm to compute best
-paths in G from s to every other vertex.
+Although we typically speak of “the” shortest path between two nodes, single
+graph could contain several minimum-length paths with the same endpoints.
+Even for weighted graphs, it is often desirable to choose a minimum-weight
+path with the fewest edges; call this a best path from s to t. Suppose we are
+given a directed graph G with positive edge weights and a source vertex s in G.
+Describe and analyze an algorithm to compute best paths in G from s
+to every other vertex.
 
 A:
 call an edge (u, v) tight if dist(u) + W(u, v) = dist(v)
