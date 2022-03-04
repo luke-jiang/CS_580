@@ -1,0 +1,268 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{6} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+  We can construct an intermediate graph to help us. Given the original graph G = (V,E), we can construct the intermediate graph G' = (V',E') as follows: 
+  
+  \begin{enumerate}
+      \item V': for each vertex v $\in$ V, we have $v_{odd}$ and $v_{even}$ in V'
+      \item E': for each edge (v,w) $\in$ E, we have $(v_{odd},w_{even})$ and $(v_{even},w_{odd})$ in E' 
+  \end{enumerate}
+  
+  To find the shortest even walk between two vertices s and t, we can simply find the shortest walk from $s_{even}$ to $t_{odd}$ in G', since we define even distance as there are an even number of vertices between s and t. Since we start with $s_{even}$, every path that goes through an odd number of vertices will end up with an even vertex. In the end, we define the true distance of each vertex as its odd vertex's distance.  
+  
+  From above, we know if G has n vertices and m edges, G' would have n' = 2n vertices and m' = 2m edges.
+  With above construction, we can dive in to the problems 
+  
+\begin{enumerate}
+      \item Even distance when edges have non-negative weights. \\\\
+      For this problem, we can simply use Dijkstra's algorithm on G' and apply it n' times. Below is the pseudocode.  
+      
+      \begin{lstlisting}
+        dist = a map that takes a pair of vertices as key, 
+                and use the distance between them as value
+        
+        function dij(G', s_even):
+            H = {(s_even, 0)}
+            for all other vertices v in G':
+                H.insert(v, INF)
+            while H is not empty:
+                v = H.getMin()
+                for all neighbors (v, w) in G' where w is unvisited:
+                    decrease priority of w to v.dist + weight (v,w)
+        
+        function findMinPaths(G):
+            build the intermediate graph G'
+            for each even vertex v in G':
+                dij(G', v)
+                dist(v, v) = 0
+                for each vertex v' other than v in G:
+                    dist(v,v') = dist(v_even,v'_odd)
+      \end{lstlisting}
+      
+      Analysis: 
+      \begin{enumerate}
+          \item The above algorithm is correct. Firstly, the edges are non-negative, so Dijkstra's algorithm will give us the shortest distance between a pair of vertices. Secondly, if we start with $s_{even}$ and use a walk with even number of vertices, we will always end up at $t_{odd}$. In the end, since we are finding the shortest even walks, we return the distance to the corresponding odd vertex in G' for each vertex in G.
+          
+          \item Dijkstra's algorithm will run in O(E+VlogV) = O(2m+2nlog(2n)) = O(m+nlogn). Since we are running it 2n times, the time complexity for our entire algorithm is O($2nm+2n^2logn$) = O($nm+n^2logn$)
+      \end{enumerate}
+      
+      \item Even distance when edges have negative weights with no negative-cycle: \\\\
+      For this problem, we can simply use a Dynamic Programming solution as explained in the class. As mentioned in Jeff's note, this algorithm is called Floyd-Warshall. We can combine the intermediate graph with Floyd-Warshall's algorithm: apply the algorithm on the intermediate graph, and return the true distance of (u,v) by looking up the distance of ($u_{even}$, $v_{odd}$).
+      
+      \begin{lstlisting}
+        dist = a map that takes a pair of vertices as key, 
+                and use the distance between them as value
+        
+        initialize dist for every pair of vertices (v,u) 
+        and with value INF
+        
+        function fw(G'):
+            for each edge (v, u) in G:
+                dist[v_even, u_odd] = weight(v, u)
+                dist[v_odd, u_even] = weight(v, u)
+                
+            for all vertices r in G':
+                for all vertices u in G':
+                    for all vertices v in G':
+                        temp = dist(u,) + dist(r,v)
+                        if dist[u,v] > temp:
+                            dist[u,v] = temp
+                            
+            for each vertex u in G:
+                for each vertex v in G:
+                    realDist[u,v] = dist[u_even, v_odd]
+            return realDist as result.
+      \end{lstlisting}
+      
+      Analysis: 
+      \begin{enumerate}
+          \item The above algorithm is correct because first, there is no negative cycle and Floyd-Warshall will consider every path between two vertices, hence the algorithm will give us the shortest distance between a pair of vertices. Secondly, if we start with $s_{even}$ and use a walk with even number of vertices, we will always end up at $t_{odd}$. In the end, since we are finding the shortest even walks, we return the distance to the corresponding odd vertex in G' for each vertex in G.
+          
+          \item As we can see, the time complexity is dominated by the second for-loop in the above algorithm. There are two inner loops in that for-loop, each has O(n) time complexity. Hence, the time complexity for our algorithm is O($n^3$)
+      \end{enumerate}
+\end{enumerate}
+  
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+  We can use an algorithm called Bellman-Ford to solve this problem. The idea is we first calculate the shortest path between the source with any other vertices. After we have computed shortest path between source to all other vertices, we iterate through the edges one more time. If in this final iteration we found a shorter distance on any path, there must be a negative cycle. 
+  
+  Below is the pseudocode, assume we have a graph G with |V| vertices and |E| edges, s is used as the source vertex  
+    \begin{lstlisting}
+    
+     function findNegCycle(Graph G):
+        dist = an array of size V 
+        //step 1
+        dist[s] = 0
+        for all other vertices v than s:
+            dist[v] = INF
+        
+        //step 2
+        iterate the following for |V|-1 times:
+            for each edge v-w:
+                if dist[w] > dist[v] + weight of v-w:
+                    dist[w] = dist[v] + weight of v-w
+        
+        //step 3
+        for each edge v-w:
+            if dist[w] > dist[v] + weight of v-w:
+                    return "Negative Cycle"
+        
+        
+        
+        
+    \end{lstlisting}
+ 
+  
+\textbf{Analysis:} 
+\begin{enumerate}
+    \item The above algorithm is correct because step 2 guarantees to find the distance of the shortest path between the source with any other vertex. If in step 3 we can find a distance shorter than what we have found in step 2, we know there is a negative cycle. We are guaranteed to find the shortest distances in step 2 because, there could be at most |V|-1 edges on the shortest path between the source and another vertex, hence if we iterate through |V| - 1 times, we are guaranteed to find the shortest distance 
+    
+    \item If we assume the graph is connected, meaning source can reach all the vertices on the graph, the above algorithm takes O(VE) time because in step 2, the inner loop takes O(E) time and the outer loop takes O(V) time. 
+    
+    \item If the graph is not connected, meaning there are some vertices not reachable from a source, then we can simply run the above algorithm for all the vertices, which yields a time complexity of O($V^2E$)
+\end{enumerate}
+      
+\end{numedquestion}
+
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

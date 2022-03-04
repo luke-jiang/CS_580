@@ -1,0 +1,214 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{4} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+  We can use a coloring method to help us determine whether a graph is bipartite or not. We use two colors to represent L and R. If after coloring, all vertices have different colors with their neighbours, a graph is bipartite. Otherwise, it is not
+  
+  Below is the psuedocode for this algorithm. As mentioned before, we only use 2 colors so that we can represent L and R. We also keep a record of all visited vertices, so we don't have to traverse the same vertex more than once.    
+  \begin{lstlisting}
+    function isBipartite(vertex v):
+        for all neighbours of v:
+            if neighbour is visited:
+                if neighbour.color == v.color:
+                    return false
+            else:
+                mark neighbour as visited
+                neighbour.color = opposite of v.color
+                if (isBipartite(neighbour) == false):
+                    return false
+        return true
+        
+    function isBipartite(vertex v, Color c):
+        mark v with c
+        Color c' = opposite of c
+        for each edge (v, w):
+            if w is marked and its color != c':
+                return false
+            isBipartite(w, c')
+        return true
+            
+                
+  \end{lstlisting}
+  
+  Analysis:
+    \begin{enumerate}
+        \item In the above algorithm, we are simply traversing through every vertex in the graph. As mentioned above, we kept a record of all visited vertices, so we don't visit the same vertex more than once. Hence, the time the above algorithm take is O(N)
+        \item Note the above graph only works if the graph is connected. For graph that is not all connected, we can simply run the above algorithm for all unconnected vertices. But the amortized time for unconnected graph using the above algorithm is also O(N), since in this case, T(N) = $\frac{O(N*N)}{N} = O(N)$ 
+    \end{enumerate}
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+  Below is the pseudocode.
+    \begin{lstlisting}
+    
+     function findCuts(Graph G):
+        List L = topological order of G  
+        Array A = new array of size of 2 * |V|, initialized to 0.
+        
+        for each vertex v in L:
+            int max = v.order
+            for each edge (v, w):
+                max = Math.max(max, w.order)
+            from = 2 * v.order + 1
+            to = 2 * max
+            A[from]++
+            A[to]--
+        
+        counter = 0
+        for i = 1 to len(A)-2, i += 2:
+            counter += A[i]
+            if counter == 0:
+                report vertex ((i+1)/2) as (s,t)-cut
+            counter = A[i+1]
+        
+    \end{lstlisting}
+  
+  The algorithm first finds the topological order of G using modified DFS mentioned in the lecture. This returns an ordered list of vertices. Then, the algorithm allocates an array A of size 2 * |V|, which is used to mark a set of vertices that are not (s,v)-cut vertices. For example, if we know the vertices whose orders are between (a, b) are definitely not (s,v)-cut vertices, we add 1 to index 2 * a.order + 1, marking the start of the interval; and subtract 1 from index 2 * b.order, marking the end of the interval. After that, we traverse all vertices and for each vertex v, we find the farthest edge (v, w). By definition, all vertices whose order is between v and w are not (s,t)-cut vertices, so we mark the range (v, w) accordingly. In the end, we traverse A and keeps a running sum. Whenever the sum equals 0, it means that the vertex that corresponds to that index is not in any range, so it is a (s,t)-cut vertex.
+  
+\textbf{Analysis:} 
+\begin{enumerate}
+    \item We can use the modified DFS covered in the lecture to get L, which takes O(V + E) time. the max() function in inner for loop takes O(E) time, since it traverses all edges once. The two marking statements takes O(V) time. So in total the algorithm takes O(V + E) time.
+\end{enumerate}
+      
+\end{numedquestion}
+
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}
