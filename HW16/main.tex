@@ -1,0 +1,182 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{16} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+We can use the technique as defined in the Stanford note, which is provided as reading materials. The idea is to add a binary tree structure on top of the existing count-min-sketch algorithm. The binary tree will be constructed by computing dyadic intervals, with the whole stream as root and singleton intervals as leaves. For each interval, we compute the sum of occurrences of elements inside the interval using count-min-sketch. Here is the pseudo-code 
+\begin{lstlisting}[mathescape=true]
+ModifiedCMK($\epsilon$,$\delta$):
+    maintain a list L of $\epsilon$-heavy hitters;
+    iterate through the tree from root:
+        call count-min-sketch($\epsilon$,$\delta$) on each interval
+        if the result $\ge$ $\frac{n}{w}$:
+            we explore this interval next
+    
+    add all leaves whose result is $\ge$ $\frac{n}{w}$ to L
+\end{lstlisting}
+According to the lecture note, since there will be at most $\frac{1}{\epsilon}$ many $\epsilon$-heavy hitters, L we maintained in the algorithm will have a space of O($\frac{1}{\epsilon}$)\\
+
+To make the probability of error $\le$ $\frac{1}{n^2}$, we can set $\delta$ of our algorithm to $\frac{1}{n^3}$. This way, each item has an error probability of $\frac{1}{n^3}$. We can take the union bound and the probability of error is $\le$ $\frac{1}{n^2}$ \\
+
+Since w = $\frac{2}{\epsilon}$, $\frac{n}{w}$ is $\frac{n\epsilon}{2}$. Hence, we may include some items with frequency in [$\frac{\epsilon}{2}$,\epsilon) in L. 
+
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+Since now w = $\frac{4}{\epsilon}$, which is twice the original size, we can think of values of hash functions as buckets. Originally, we have a list of buckets with size $\frac{2}{\epsilon}$, now we have a list of buckets with size $\frac{4}{\epsilon}$.
+
+Previously when the list of bucket is size $\frac{2}{\epsilon}$, two heavy hitters with the same hash value will be thrown into the same bucket. Now with doubled size, we can avoid this. When hashing a heavy hitter h, we always try to hash it into the first half of the bucket list first, which is of size $\frac{2}{w}$. There are two cases:
+\begin{enumerate}
+    \item The bucket we hash to doesn't contain a heavy hitter. Then we put this heavy hitter into this bucket and flag it
+    \item The bucket we hash to is flagged, meaning it already contains a heavy hitter. Then we try to hash it to the bucket at i+$\frac{2}{\epsilon}$, which is in the second half of the bucket list. There can also be two cases when doing this 
+    \begin{enumerate}
+        \item The bucket doesn't already contains a heavy hitter. Then we simply put this heavy hitter to this bucket and flag this bucket.
+        \item The bucket already contains a heavy hitter. Then we try to find a bucket that is not flagged to put this heavy hitter by iterating all the buckets from the immediate next bucket. We can always find a bucket that is not flagged because there are only $\frac{1}{\epsilon}$ heavy hitters and we have $\frac{2}{\epsilon}$ buckets in the second half of the bucket list 
+    \end{enumerate}
+\end{enumerate} 
+Since each heavy hitter will reside in a different bucket, the only elements that are hashed into a flagged bucket will be the non-heavy hitters, which means errors will only come from non-heavy hitters. We distribute this error over $\frac{4}{\epsilon}$ entries, hence we expect $\frac{S\epsilon}{4}$ additive errors, for each element e, since there are S non-heavy hitters. With this in mind, we can change the proof of theorem 3.1 on the lecture note a bit and we can see that with probability $\ge$ $\frac{1}{4}$, we have A[h(e)] $\le$ $f_e + S\epsilon$.
+
+We can still apply the proof provided in the lecture note to argue the probability of error is $\le$ $\frac{1}{n}$. This is because $\delta$ = $\frac{1}{n^2}$ and we can apply the union bound over all n elements.  
+\end{numedquestion}
+
+
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

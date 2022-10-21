@@ -1,0 +1,201 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{9} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+\begin{enumerate}[a]
+    \item We can first observe the following:\\
+    \begin{enumerate}
+        \item set A = A $\cap$ B + A $\backslash$ B. 
+        \item set B = A $\cap$ B + B $\backslash$ A.
+        \item A $\cup$ B = A $\cap$ B + A $\backslash$ B + B $\backslash$ A.
+    \end{enumerate}
+    If we define the function f'(S,T) to be the number of edges from S to T and S and T are disjoint, we can see that 
+    \begin{enumerate}
+        \item f(A) = f'(A, V $\backslash$ A)
+        \item f(B) = f'(B,V $\backslash$ B)
+        \item f(A $\cap$ B) = f'(A $\cap$ B, V $\backslash$ (A $\cap$ B))
+        \item f(A $\cup$ B) = f'(A $\cup$ B, V $\backslash$ (A $\cup$ B))
+    \end{enumerate}
+    We break down each of the above to prove the function f is submodular.\\
+    
+    f'(A, V $\backslash$ A) = f'(A $\cap$ B, V $\backslash$ (A $\cup$ B) ) + f'(A $\cap$ B, B $\backslash$ A) + f'(A $\backslash$ B, B $\backslash$ A) + f'(A $\backslash$ B, V $\backslash$ (A $\cup$ B) ) \\
+    \\
+    f'(B, V $\backslash$ B) = f'(A $\cap$ B, V $\backslash$ (A $\cup$ B) ) + f'(A $\cap$ B, A $\backslash$ B) + f'(B $\backslash$ A, A $\backslash$ B) + f'(B $\backslash$ A, V $\backslash$ (A $\cup$ B) )\\
+    \\
+    f'(A $\cup$ B, V $\backslash$ (A $\cup$ B)) = f'(A $\cap$ B, V $\backslash$ (A $\cup$ B)) + f'(A $\backslash$ B,V $\backslash$ (A $\cup$ B)) + f'(B $\backslash$ A, V $\backslash$ (A $\cup$ B))\\
+    \\
+    f'(A $\cap$ B, V $\backslash$ (A $\cap$ B)) = f'(A $\cap$ B, V $\backslash$ (A $\cup$ B)) + f'(A $\cap$ B, A $\backslash$ B) + f'(A $\cap$ B, B $\backslash$ A)\\
+    \\
+    
+    From the above, we can see that f(A) + f(B) - f(A $\cup$ B) - f(A $\cap$ B) = f'(A, V $\backslash$ A) + f'(B,V $\backslash$ B) - f'(A $\cap$ B, V $\backslash$ (A $\cap$ B)) - f'(A $\cup$ B, V $\backslash$ (A $\cup$ B)) = f'(A $\backslash$ B, B $\backslash$ A) + f'(B $\backslash$ A, A $\backslash$ B) $\geq$ 0.
+    
+    Hence, f(A) + f(B) $\geq$ f(A $\cup$ B) + f(A $\cap$ B) and f is submodular
+    \pagebreak
+    \item We prove both directions 
+    \begin{enumerate}
+        \item if G is Eulerian, f is symmetric: \\
+        if G is Eulerian, we know every vertex has the same number of outgoing edges as incoming edges. We prove f is symmetric using induction on the size of S \\
+        \\
+        \textbf{Base case:} when |S| = 1, meaning there is only 1 vertex in the set, f(S) is the number of outgoing edges and f(V $\backslash$ S) is the number of edges going from V $\backslash$ S to S, which is also the number of incoming edges of S. Since G is Eulerian, f(S) = f(V $\backslash$ S)\\
+        \\
+        \textbf{Induction Hypothesis:} when |S| = k $\leq$ |V| - 1, f(S) = f(V $\backslash$ S)\\
+        \\
+        \textbf{Inductive Step:} when |S| = k + 1, we added a new vertex v to the previous set S'. We define the function f'(S,T) to be the number of edges from S to T and S and T are disjoint. Hence f(S) = f(S') + f'(v,V $\backslash$ S) - f'(S',v) and f(V $\backslash$ S) = f(V $\backslash$ S') + f'(V $\backslash$ S,v) - f'(v,S'). Since f'(v,V $\backslash$ S) - f'(S',v) = f'(V $\backslash$ S,v) - f'(v,S'), we can conclude f(S) = f((V $\backslash$ S). Hence, f is symmetric 
+        
+        \item if f is symmetric, G is Eulerian 
+        If f is symmetric, we know f(S) = f(V $\backslash$ S). If |S| = 1, S contains only one vertex v and f(S) is the number of outgoing edges of v and f(V $\backslash$ S) is the number of incoming edges to v. Hence, the number of outgoing edges is the same as the number of outgoing edges for a single vertex. This is true for all vertices, hence G is Eulerian   
+        
+    \end{enumerate}
+    \item From question 2, we know if G is Eulerian, we have f(A) = f(V $\backslash$ A) and f(B) = f(V $\backslash$ B). Since f(V $\backslash$ A) $\geq$ f(B $\backslash$ A) and f(V $\backslash$ B) $\geq$ f(A $\backslash$ B), we know f(A) + f(B) $\geq$ f(B $\backslash$ A) + f(A $\backslash$ B)     
+\end{enumerate} 
+  
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+
+Suppose (S, T) is a valid minimum (s,t)-cut of G, where $s \in S$ ans $t \in T$. Then u either belongs to S or T. Suppose $u \in S$. In this case, (S, T) is also a minimum cut for (u, t). Therefore $\lambda$(s, t) = $\lambda$(u, t). Suppose $\lambda$(s, u) > $\lambda$(u, t), then the goal becomes to prove $\lambda$(s, t) >= $\lambda$(u, t), which is true because $\lambda$(s, t) = $\lambda$(u, t). Suppose $\lambda$(s, u) $\leq$ $\lambda$(u, t), then the goal becomes to prove $\lambda$(s, t) >= $\lambda$(s, u). Since $\lambda$(s, t) = $\lambda$(u, t), the goal is equivalent to proving $\lambda$(u, t) >= $\lambda$(s, u), which is the hypothesis we assumed for this case. Therefore, $\lambda$(s, t) >= min { $\lambda$(s, u), $\lambda$(u, t) }. The same proof logic can be used to prove the $u \in T$ case.
+
+
+     
+\end{numedquestion}
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

@@ -1,0 +1,194 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{18} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+
+We can reduce the 3-SAT problem to maximum coverage to prove that maximum coverage is NP-Hard. Given a 3-SAT formula of m variables and n clauses, create an element for each clause. For each variable x, create an element for that variable and two sets representing x and not x respectively. Since we can not choose both x and not x, we make the element representing x being included in both set x and set not x. Also, set x includes a clause c if c contains that variable. Then, we try to find a maximum coverage of m sets and see if the returned coverage has size n. If so, f is satisfiable. This is because in a satisfiable assignment, at lease one variable is selected to be true for each clause. Therefore, all elements representing clause must be covered by at least one set representing variables. If the maximum coverage doesn't contain c, then any coverage that is smaller than that coverage cannot cover all clauses, which implies that the assignment cannot satisfy all clauses. Therefore, finding a maximum coverage of size n is equivalent to checking whether the Boolean equation is satisfiable.
+
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+\begin{enumerate}
+    \item Non-negative\\
+    This is trivial. Since each set can contain at least 0 points, f(S) $\ge$ 0. 
+    \item Monotonic\\
+    This is also trivial. If S $\subseteq$ T, that means T contains all the points in S, plus maybe some extra points that is not in S. Hence, f(S) $\le$ f(T)
+    \item Submodular
+    \begin{enumerate}
+        \item S = T\\
+        If S = T, then trivially, f(S + e) - f(S) = f(T + e) - f(T)
+        \item S $\subset$ T\\
+        Since S and T are collections of sets, if S $\subset$ T, then T contains all the sets in S and some extra sets. These extra sets might contain points not in S and it might not
+        \begin{enumerate}
+            \item extra sets in T don't contains new points\\
+            If these extra sets in T don't contain points that are not in S, then f(T) = f(S), hence f(S + e) - f(S) = f(T + e) - f(T)
+            \item extra sets in T contains new points\\
+            Since all the points covered by S are also covered by T. Since e was not in T, it can't be in S. If we add e to S, then f(S+e) - f(S) = 1, since only e is added. Same goes to f(T+e) - f(T). Hence, f(S+e) - f(S) = f(T+e) - f(T) 
+            
+        \end{enumerate}
+    \end{enumerate}
+    
+\end{enumerate}
+\end{numedquestion}
+\pagebreak
+\begin{numedquestion}
+
+
+        S and T might intersect and they might not. If e $\in T$ is also $\in$ S, then f(S+e) - f(S) = 0. Hence, we are interested in e that is not $\in$ S. Hence the right hand side is really $\sum_{e \in T-S}(f(S+e) - f(S))$.\\
+        
+        We can set T' = T + S and we have S $\subseteq$ T'. Suppose there are k such e, namely e1, e2, ..., ek. Then we want to prove f(T) - f(S) $\le$ f(S + e1) - f(S) + f(S + e2) - f(S) +....+ f(S + ek) - f(S).\\
+        
+         Let's analyze f(S + ei) - f(S), with i = 1 to k. We know S $\subseteq$ T'-ei, since ei is not in S. Since f is submodular, f(S + ei) - f(S) $\ge$ f(T') - f(T'-ei). Since f is also monotonic, f(T') $\ge$ f(T) and f(T'-ei) $\ge$ f(S). Hence f(S + ei) - f(S) $\ge$ f(T') - f(T'-ei) $\ge$ f(T) - f(S). This is true for all i from 1 to k, hence f(S + e1) - f(s) + f(S + e2) - f(S) +....+ f(S + ek) - f(S) $\ge$ f(T) - f(S).
+    
+\end{numedquestion}
+\pagebreak
+\begin{numedquestion}
+    We can still use the greedy algorithm introduced in the lecture to perform the approximation. Suppose Si-1 is the collection of sets we have at the i-1 iteration, we pick a set ei that will maximize f(Si) at the ith iteration. We do this for each iteration. In the end, we will have {e1,e2,e3,...,ek}.\\
+    
+    Let f(T) = OPT. OPT - $f(S_{i-1})$ $\le$ $\sum_{e \in T} (f(S_{i-1}+e) - f(S_{i-1}))$. Since for all $e \in T$, there will be one particular e' that render the maximum value of $f(S_{i-1}+e)$ for all e. Hence, OPT - $f(S_{i-1})$ $\le$ $\sum_{e \in T} (f(S_{i-1}+e) - f(S_{i-1}))$ $\le$ $k(f(S_{i-1}+e') - f(S_{i-1}))$, since there are k such e in T. \\
+    
+    Rearrange the term above, we have $f(S_{i-1}+e') - f(S_{i-1})$ $\ge$ $\frac{1}{k}$ (OPT - $f(S_{i-1})$). Since we are using greedy algorithm, this is really  $f(S_{i}) - f(S_{i-1})$ $\ge$ $\frac{1}{k}$ (OPT - $f(S_{i-1})$). This is exactly what we got in the lecture. We can following the steps in the lecture to get $f(S_k) \ge (1-\frac{1}{e})OPT$ 
+    
+    Since we will just take the set that provide the maximum value at each iteration, the running time will be polynomial. 
+\end{numedquestion}
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

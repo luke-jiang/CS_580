@@ -1,0 +1,339 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{7} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+  We can use a DP method as follows to solve this problem 
+  
+  \begin{enumerate}
+      \item Semantic definition of the subproblems: SCS(i,j) = length of shortest common supersequence between A[1...i] and B[1...j]
+      
+      \item How to extract the overall output from the subproblems: The overall output is SCS(m,n)
+      
+      \item Recursive spec 
+            \begin{equation}
+                SCS(i,j)=\begin{cases}
+                        0 \quad \text{if  } i=0 \text{  and  } j=0  \\
+                        j \quad \text{if  } i=0 \text{  and  } j \ne 0  \\
+                        i \quad \text{if  } i\ne0 \text{  and  } j=0  \\
+                        1 + SCS(i-1,j-1) \quad \text{if  } A[i] = B[j]\\
+                        1 + min(SCS(i-1,j),SCS(i,j-1)) \quad   \text{otherwise}
+                        \end{cases}
+            \end{equation} 
+        
+        \item Number of subproblems: There are m choices for i and n choices for j, hence there are O(mn) subproblems 
+        
+        \item Running time Analysis: Since we will cache our result, it takes O(1) per subproblem. Hence, in total, the running time is O(mn)
+  \end{enumerate}
+  
+   The above algorithm is correct because we tried to construct every possible supersequence and we never repeat any computation twice. We start comparing from the rear elements. 
+  
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+    \begin{enumerate}[(a)]
+        \item We can use a stack for this problem. We push the character to the top of stack if it is either '(' or '['. When we see a closing bracket, ')' or ']', we pop the top of stack and check if the character we popped match the character we now have. If it doesn't match, we report as \textbf{not balanced}. If after we have iterated through W, the stack is not empty, it means some brakcets are not closed, hence W is \textbf{not balanced}
+        
+        Below is the pseudocode 
+        \begin{lstlisting}
+            stack = an initially empty stack we use to store 
+                    the opening brackets we see
+            
+            function isBalaned(W):
+                iterate through W with index i from index 0:
+                    if (W[i] is either '(' or '['):
+                        push W[i] to the top of stack
+                    else:
+                        c = pop the top of stack
+                        if W[i] is not the matching closing bracket of c:
+                            return "NOT BALANCED"
+                            
+                if stack is not empty:
+                    return "NOT BALANCED"
+                
+                return "BALANCED"
+        \end{lstlisting}
+        
+        Analysis:
+            \begin{enumerate}
+                \item the above algorithm is correct because it makes sure every bracket is closed before we meet the closing bracket of another kind. It also makes sure that every opening bracket is closed at the end 
+                
+                \item it takes O(n) time because we only iterate through the string once  
+            \end{enumerate}
+        
+        \item We can use a DP method for this problem. We assume '(' only matches ')' and '[' only matches with ']' 
+        \begin{enumerate}
+        \item Semantic definition of the subproblems: LBS(i,j) = length of longest balanced string between W[i,j]
+      
+        \item How to extract the overall output from the subproblems: Assuming the string starts at index 1 and ends at index n, the overall output is LBS(1,n)
+      
+        \item Recursive spec 
+            \begin{equation}
+                LBS(i,j)=\begin{cases}
+                        0 \quad \text{if  } i \geq j \\
+                        \\
+                        max \begin{cases}
+                                    2+LBS(i+1,j-1)\\
+                                    $$max^{k=j}_{k=i}$$ (LBS(i,k) + LBS(k+1,j))\\
+                            \end{cases}
+                        \text{if  W[i] matches W[j]}
+                        \\
+                        \\
+                        $$max^{k=j}_{k=i}$$ (LBS(i,k) + LBS(k+1,j)) \qquad \text{if W[i] doesn't match W[j]  }\\
+                        \end{cases}
+            \end{equation} 
+        
+        \item Number of subproblems: There are n choices for i and n choices for j, hence there are O($n^2$) subproblems  
+        
+        \item Running time Analysis: In each subproblem, we need to divide the substring in two parts and do the algorithm recursively on these two parts. It takes O(n) for us to try all the dividing points. Hence, in total, the running time is O($n^3$)
+        \end{enumerate}
+        
+        The above algorithm is correct because we tried all possible substrings and we never repeat the same substring twice. 
+        
+        \item We can use a DP method for this problem. We assume '(' only matches ')' and '[' only matches with ']' 
+        \begin{enumerate}
+        \item Semantic definition of the subproblems: SBS(i,j) = length of shortest balanced supersequence of W[i,j] 
+      
+        \item How to extract the overall output from the subproblems: Assuming the string starts at index 1 and ends at index n, the overall output is SBS(1,n)
+      
+        \item Recursive spec 
+            \begin{equation}
+                SBS(i,j)=\begin{cases}
+                        0 \quad \text{if  } i $\geq$ j \\
+                        \\
+                     
+                        min \begin{cases}
+                                    2+SBS(i+1,j-1)\\
+                                    $$min^{k=j-1}_{k=i+1}$$ (SBS(i,k) + SBS(k+1,j))\\
+                            \end{cases}
+                        \text{if  W[i] matches W[j]}
+                        \\
+                        \\
+                        min \begin{cases}
+                                    \text{insert on the left: } 2+SBS(i,j-1)\\
+                                    \text{insert on the right: } 2+SBS(i+1,j)\\
+                                    $$min^{k=j-1}_{k=i+1}$$ (SBS(i,k) + SBS(k+1,j))\\
+                            \end{cases}
+                        \qquad \text{if W[i] doesn't match W[j]  }\\
+                        \end{cases}
+            \end{equation} 
+        
+        \item Number of subproblems: There are n choices for i and n choices for j, hence there are O($n^2$) subproblems  
+        
+        \item Running time Analysis: In each subproblem, we need to divide the substring in two parts and do the algorithm recursively on these two parts. It takes O(n) for us to try all the dividing points. Hence, in total, the running time is O($n^3$)
+        \end{enumerate}
+        
+        The above algorithm is correct because we tried all possible substrings and we never repeat the same substring twice. We also made sure at every level, a substring is balanced. When W[i] $\ne$ W[j], we either insert a character matching W[i] or matching W[j] at the other end.  
+        
+        \item We can use a DP method for this problem. We assume '(' only matches ')' and '[' only matches with ']'. There are three operations we can perform, we can either insert a matching character, delete a character or replace a character
+        \begin{enumerate}
+        \item Semantic definition of the subproblems: ED(i,j) = edit distance of W[i,j] 
+      
+        \item How to extract the overall output from the subproblems: Assuming the string starts at index 1 and ends at index n, the overall output is ED(1,n)
+      
+        \item Recursive spec 
+            \begin{equation}
+                ED(i,j)=\begin{cases}
+                        0 \quad \text{if  } i > j \\
+                        \\
+                        1 \quad \text{if  } i = j \\
+                        \\
+                        min \begin{cases}
+                                    ED(i+1,j-1)\\
+                                    $$min^{k=j-1}_{k=i+1}$$ (ED(i,k) + ED(k+1,j))\\
+                            \end{cases}
+                        \text{if  W[i] matches W[j]}
+                        \\
+                        \\
+                        min \begin{cases}
+                                    \text{insert on the left: } 1+ED(i,j-1)\\
+                                    delete: 1+ED(i+1,j)\\
+                                    replace: 1+ED(i+1,j+1)\\
+                                    $$min^{k=j-1}_{k=i+1}$$ (ED(i,k) + ED(k+1,j))\\
+                            \end{cases}
+                        \qquad \text{if W[i] doesn't match W[j]  }\\
+                        \end{cases}
+            \end{equation} 
+        
+        \item Number of subproblems: There are n choices for i and n choices for j, hence there are O($n^2$) subproblems  
+        
+        \item Running time Analysis: In each subproblem, we need to divide the substring in two parts and do the algorithm recursively on these two parts. It takes O(n) for us to try all the dividing points. Hence, in total, the running time is O($n^3$)
+        \end{enumerate}
+        
+        The above algorithm is correct because we tried all possible substrings and we never repeat the same substring twice.
+        
+    \end{enumerate}
+     
+\end{numedquestion}
+\pagebreak 
+\begin{numedquestion}
+    We can use a tree to represent this hierarchy, with the president at the root, all other employees will just be a node. There is an edge from w to v if w is v's supervisor 
+    
+    With the tree representation, we can use a DP method to solve this problem 
+    \begin{enumerate}
+        \item Semantic definition of the subproblems: The subproblem will be about a particular node v. For each node v, we compute the fun rating of the party when v is present, funPresent(v) and when v is not present, funNotPresent(v)  
+      
+        \item How to extract the overall output from the subproblems: the overall output would just be funPresent(root), since the president must attend
+      
+        \item Recursive spec: \\
+        \begin{equation}
+            funPresent(v) = \begin{cases}
+                            0               \quad \text{   if v is null}\\
+                            v.fun + $$\sum_{\text{each child w of v}}$$ funNotPresent(w)      \quad otherwise\\
+                            \end{cases}
+        \end{equation}
+        
+        \begin{equation}
+            funNotPresent(v) = \begin{cases}
+                            0               \quad \text{   if v is null}\\
+                            $$\sum_{\text{each child w of v}}$$ max(funNotPresent(w),funPresent(w))     \quad otherwise\\
+                            \end{cases}
+        \end{equation}   
+        
+        \item Number of subproblems: We have a subproblem for each node. Hence there are O(n) subproblems    
+        
+        \item Running time Analysis: Since we cached our result, in each subproblem, all we had to do is to perform look up, this can be done in O(1) time. Hence, the total time for our algorithm is O(n)
+        \end{enumerate}
+    
+
+    
+\end{numedquestion}
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

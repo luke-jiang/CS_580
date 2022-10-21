@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[colorlinks]{hyperref}
+\usepackage{amsmath}
+
+\newcommand{\reals}{\mathbb{R}}
+
+
+\title{Midterm 1 Practice Problems}
+\author{CS580}
+
+\begin{document}
+
+\maketitle
+
+Here is a running list of practice problems for the midterm 1. Midterm 1 is on Wednesday, February 12, at 8:00 PM in MATH 175. Feel free to run your solutions by any of the staff and you are encouraged to discuss the problems with classmates on Piazza or elsewhere.
+
+\begin{enumerate}
+    \item Let $G = (V,E)$ be an undirected graph with real-valued edge weights. Let $W$ denote the total sum of edge weights. 
+    
+    Suppose we color all of the vertices either red or blue, independently at random. We say that an edge is "bichromatic" if its endpoints have two colors, and "monochromatic" if both its endpoints have the same color. We say that an edge is "monochromatically red" if both endpoints are red
+    \begin{enumerate}
+        \item What is the expected total weight of bichromatic edges (as a function of $W$?
+        \item What is the expected total weight of monochromatically red edges?
+        \item What is the expected total weight of monochromatically blue edges?
+        \item What is the expected total weight of monochromatic edges?
+        \end{enumerate}
+    \item Prove that every directed acyclic graph contains at least one source, and at least one sink.
+    \item Design and analyze an algorithm to find the longest path in a DAG.
+    \item Consider a simple integer counter implemented in binary/bits, and the operation of incrementing it by 1. (Here changing one bit counts as one operation.) Note that an increment can unbounded worst case time, because you might have to flip a lot of bits as you "carry ones". (e.g., if the counter current holds 255, with bit string 1111111, then we have to flip 8 bits to get to the value 256, with bit string 10000000.)
+    \begin{enumerate} 
+    \item Prove that a binary counter takes constant amortized time per increment.
+    \item Prove that increasing the counter by a $k$-bit integer takes $O(k)$ amortized time.
+    \end{enumerate}
+    \item Consider the following generic recursion.
+    \begin{align*}
+        T(n) &= \alpha T(\beta n) + n^{\gamma}
+        \\
+        T(1) &= \delta
+    \end{align*}
+    where $\alpha, \beta, \gamma, \delta > 0$ are fixed constants. Prove each of the following using the recursion tree method.
+    \begin{enumerate}
+        \item For any $\beta < 1$, $T(n)$ is at most a polynomial in $n$. (Even if, say, $\alpha= 2^{260}$. Here $\alpha, \beta, \gamma, \delta)$ may appear in the exponent of the polynomial.) For simplicity, you may assume that $\alpha$ is an integer.
+        \item Show, using the recursion tree method, that if $\alpha \beta^\gamma < 1$, then $T(n) \leq O(n^{\gamma})$ time.
+        \item Show, using the recursion tree method, that if $\alpha \beta^{\gamma}= 1$, and $\beta < 1$, $T(n) \leq n^{\gamma} \log{n}$.
+    \end{enumerate}
+    \item Let $G = (V,E)$ be a directed graph with real-valued edge weights and no negative cycles. Design and analyze an algorithm that, given an integer $k$, computes the lengths of the shortest walks with \emph{exactly} $k$ edges, for each of the following settings.
+    \begin{enumerate}
+    \item Single source with positive edge weights.
+    \item Single source with general edge weights.
+    \item All pairs with positive edge weights.
+    \item Single source with general edge weights.
+    \end{enumerate}
+    \item The problems in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/book/01-recursion.pdf}{Chapter 1} of Jeff's notes, particularly the problems in the "Recursion Trees" and "Sorting" section.
+    \item Problems in chapter 5 of Kleinberg-Tardos
+    \item Any problem in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/notes/09-amortize.pdf}{Chapter 9} of Jeff's notes. I particularly like 3, 4, 5, 7, 11
+    \item Problems 2.14, 2.16, 2.17, 2.19, 2.22, 2.23, 2.32 in \href{https://people.eecs.berkeley.edu/~vazirani/algorithms/chap2.pdf}{Chapter 2 of DPV}
+    \item Problems in Chapter 6 of CLRS
+    \item Problems in Chapter 3 of Kleinberg-Tardos. Favorites include 2, 4, 7, 9, 10, 12.
+    \item Any problem in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/book/05-graphs.pdf}{Chapter 5}  of Jeff's notes. Favorites include 2, 4, 5, 8, 9, 10, 13, 14, 19, 22, 28
+    \item Any problem in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/book/06-dfs.pdf}{Chapter 6} of Jeff's notes. Favorites include 1, 2, 4, 5, 6, 7, 12, 13, 14, 15, 17, 20, 24
+    \item Any problem in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/book/08-sssp.pdf}{Chapter 8} of Jeff's notes. Favorites include 1, 4, 5, 12, 13, 14, 25, 26
+    \item Any problem in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/book/09-apsp.pdf}{Chapter 9} of Jeff's notes. Favorites include 5, 7, 8, 13
+    \item Any problem in \href{http://jeffe.cs.illinois.edu/teaching/algorithms/book/03-dynprog.pdf}{Chapter 3} of Jeff's notes. Favorites include 2, 3, 4, 5, 9, 25, 33, 42,
+    \item Any problem in Chapter 6 of Kleinberg-Tardos. Favorites include 5, 6, 11, 13, 17, 23, 25.
+    \item Worksheets from the relevant recitations in the \href{http://www.cs.cmu.edu/afs/cs/academic/class/15451-f18/www/index.html}{Fall 2018} and
+    \href{http://www.cs.cmu.edu/~avrim/451/}{Fall 2015} courses at CMU.
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,168 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{20} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+Since the stairs takes 2 minutes, if the wait is less than 2 minutes - 15 seconds = 1 minute and 45 seconds, then the optimal choice is to wait for the elevator. If the wait is longer than that, it is better to take the stairs 
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+The algorithm: we wait for 105 seconds. If the elevator arrives before we have waited 105 seconds, we take it. If after we have waited 105 seconds, the elevator still hasn't arrived, we take the stairs. Suppose the elevator takes e seconds to arrive, then OPT = \{e + 15, 120\} \\
+
+If e $\le$ 105, we take the elevator and the solution is always optimal \\
+If e > 105, ratio = $\frac{105+120}{120}$ = $\frac{15}{8}$
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+\textbf{Setting}: We assign a variable x to represent the outcome of the toss. If the outcome is head, we assign x = 1. If the outcome is tail, we assign x = 0. When x = 3, we come to make the final decision by tossing the coin again. If x = 0, which means we get a tail, we go for the stairs. If x=1, which means we get a head, we wait for another 1 * 15 = 15 seconds. \\ 
+
+\textbf{Analysis}: Since tossing a fair coin is a Bernoulli trial, the expected number of tosses for x = 3 is $\frac{3}{\frac{1}{2}}$ = 6. Therefore, the expected wait time until x= 3 is 6 * 15 = 90 seconds. When x = 3, we toss the coin again to make the final decision. The expected value of a single coin toss is $\frac{1}{2}$, hence the expected extra waiting time is $\frac{15}{2} = 7.5$. \\ 
+
+
+If e > 105, the expected ratio would be $\frac{90+120+7.5}{120} = \frac{29}{16} < \frac{15}{8}$.\\
+
+Hence, we get a ratio that is slightly better than that in question 2.
+
+\end{numedquestion}
+
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

@@ -1,0 +1,176 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{8} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+Since T1 and T2 are both spanning trees and edge e is not in T2, if we add e to T2, we will create a cycle in T2. We can add all edges in this cycle to T1. Since T1 is a spanning tree, it doesn't contain a cycle originally. Therefore, if we add a cycle to T1, we must have added some new edges to T1. After adding edges in the aforementioned cycle to T1, we can find the smallest cycle in T1 that contains e, and the edge d can be one of the edges in this cycle that is not in T1 originally but is in T2. Since deleting an edge in a cycle doesn't change connectivity, T1 - e + d is a spanning tree. 
+
+We can use the same to prove T2 - d + e is a spanning tree. 
+  
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+We can do induction on the size of T2$\backslash$T1. \\
+
+For the base case where |T2$\backslash$T1| = 0 => T1 = T2, we can give an identity map as $\varphi$, namely: $\varphi(e) = e$. So the goal now becomes proving (T1 - e + e) = T1 is a spanning tree, which we know is true from the hypothesis. 
+
+For the inductive case, assume |T2$\backslash$T1| = n and the edges in T2$\backslash$T1 are labelled as $[e_{1}, e_{2}, ..., e_{n}]$. Let $E = [e_{1}, e_{2}, ..., e_{n-1}]$ and $E' = [e_{1}^{'}, e_{2}^{'}, ..., e_{n-1}^{'}]$ where $\varphi_{0}(e_{i}) = e_{i}^{'}$ for all $e_{i}$ in E. The goal now becomes to prove $\varphi_{0} ++ (e_{n} -> e_{n}^{'})$ is one-to-one and $T1 - e_{n}^{'} + e_{n}$ is a spanning tree. The first subgoal can be proved by the fact that $\varphi_{0}$ is one-to-one and that the only unmatched edge pair is $(e_{n}, e_{n}_{'}$). The second subgoal can be proven by applying the lemma of the first problem: Let $e = e_{n}_{'}$ and $d = e_{n}$, we know from the lemma that $T1 - e_{n}^{'} + e_{n}$ is a spanning tree, which is exactly the subgoal we are trying to prove.
+     
+\end{numedquestion}
+\pagebreak 
+\begin{numedquestion}
+We prove for both directions 
+\begin{enumerate}
+    \item T is the minimum weight spanning tree => w(T) $\leq$ w(T') for every spanning tree T' with |T$\backslash$T'| = 1:
+\\
+if T is the minimum weight spanning tree, by definition we have w(T) $\leq$ w(T') for every spanning tree T'. Hence, this direction is true
+
+\item w(T) $\leq$ w(T') for every spanning tree T' with |T$\backslash$T'| = 1 => T is the minimum weight spanning tree:
+\\
+According to question 2, for every edge in T, we can find a mutually exchangeable pair for it with another edge in other spanning trees. For a particular T' that has |T$\backslash$T'| = 1, we know if e $\in$ T and not in T', we have a $\varphi(e)$ in T' and T = T' - $\varphi(e)$ + e. Since w(T) $\leq$ w(T'), we have w(e) $\leq$ w($\varphi(e)$). Since for every edge e in T, we can find such a $\varphi(e)$, we know every edge e in T has a smaller weight than its corresponding edge in T'. Hence T is the minimum wight spanning tree
+\end{enumerate}
+ 
+
+    
+
+    
+\end{numedquestion}
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

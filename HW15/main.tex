@@ -1,0 +1,172 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{14} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+No. According to the proof, we only utilized pair-wise independence 
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+We define the random variables Xi to be the balls a particular bin has. Xi = 1 means the ball Xi is in the bin, Xi = 0 means otherwise. Hence, suppose max load is k, we want P($\sum_{i=1}^{n}Xi$ $\ge$ k) $\le \delta$\\  
+
+Using theorem 1 from the lecture note, we have P($\sum_{i=1}^{n}Xi$ $\ge$ k) = $\frac{pn+3{(pn)}^2}{{(k-pn)}^4}$ $\le \delta$\\
+
+Step1: We raise both side to the power of $\frac{1}{4}$, we get $\frac{{(pn+3{(pn)}^2)}^\frac{1}{4}}{{(k-pn)}}$ $\le {\delta}^\frac{1}{4}$\\
+
+Step2: With the above, we have $\frac{k-pn}{{(pn+3{(pn)}^2)}^\frac{1}{4}}$ $\ge$ $\frac{1}{{\delta}^\frac{1}{4}}$ \\
+
+Step3: Simplify above, we have $\frac{k}{{(pn)}^\frac{1}{4}}$ $\ge$ $\frac{k-pn}{{(pn+3{(pn)}^2)}^\frac{1}{4}}$ $\ge$ $\frac{1}{{\delta}^\frac{1}{4}}$ \\
+
+Step4: With the above, we have k $\ge$ $\frac{{(pn)}^\frac{1}{4}}{{\delta}^\frac{1}{4}}$\\
+
+Step5: Since $p^\frac{1}{4}$ is a constant, we have k $\le$ O($\frac{{n}^\frac{1}{4}}{{\delta}^\frac{1}{4}}$) with the probability of 1 - $\delta$
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+Suppose P(Xn = xn) = p, then P(Xn $\ne$ xn) = (1-p).\\
+Suppose ci is a value $\in$ [x1,xn] that is drawn at the ith time. Note the value of ci is random.\\
+Due to K-wise independence, we have P(X1 = c1, X2 = c2, ...., Xn = xn) = P(X1=c1)P(X2=c2)...p. Similarly, P(X1 = c1, X2 = c2, ...., Xn $\ne$ xn) = P(X1=c1)P(X2=c2)...(1-p).\\
+
+Hence, P(X1 = c1, X2 = c2, ....,Xn-1 = cn-1) = P(X1=c1)P(X2=c2)...p + P(X1=c1)P(X2=c2)...(1-p) = P(X1=c1)P(X2=c2)..P(Xn-1=cn-1), which is (k-1)-wise independence
+\end{numedquestion}
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

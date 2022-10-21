@@ -1,0 +1,167 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{14} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+\begin{enumerate}[a.]
+    \item Since h is a universal hash function, according to the definition, for all pairs of i and j $\in$ [n] and i $\ne$ j, P(h(i) = h(j)) = $\frac{1}{m}$. There are $\frac{n(n-1)}{2}$ pairs of i and j. Hence, P(a collision exist) = $\#$pairs/m = $\frac{n(n-1)}{2m}$. Since m $\ge$ $n^2$, P(a collison exist) $\le$ $\frac{n^2 - n}{2n^2}$ $<$ $\frac{1}{2}$. Hence P(h is injective) = 1 - P(a collision exist) $\ge$ $\frac{1}{2}$  
+    
+    \item In a, we showed that if m $\ge$ $n^2$, a universal hash function h has a probability $\ge$ $\frac{1}{2}$ to be injective. We can construct a hash table with size m, using the universal hash function h defined in a. In the hash table, an item with key i with i $\in$ [n], will have a new index h(i) mod m in the hash table. Since we proved above that when m $\ge$ $n^2$, for a pair of i and j $\in$ [n] and i $\ne$ j, P(h(i) $\ne$ h(j)) $\ge$ $\frac{1}{2}$, in this hash table we construct, the max load is 1 also with a probability $\frac{1}{2}$. The space of this hash table is m, which is O($n^2$)  
+\end{enumerate}
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+\begin{enumerate}[a.]
+    \item Since we have n keys, we need an array of size n for the first array. For each key, we also build a hash table of size $k^2$ to store collisions. However, we should note the an entry in the first array is also the first item of the second array corresponding to that item. Hence, the total size is $\le$ n + $\sum_{i=1}^m {k_i}^2$ 
+    
+    \item We should note that total number of ordered pairs of colliding keys is the sum of the number of colliding key pairs with i $\ne$ j and i = j. Since $\sum_{i=1}^m {k_i}^2$ only covers the case when i $\ne$ j, we have $\sum_{i=1}^m {k_i}^2$ $\le$ total number of ordered pairs of colliding keys
+    
+    \item Suppose a random variable $C_{xy}$, $C_{xy}$= 1 when x and y collide. E(total number of ordered pairs of colliding keys) = E($\sum_x$$\sum_y$ $C_{xy}$) = n + E($\sum_x$$\sum_{x \ne y}$ $C_{xy}$)\\
+    
+    Since there are n(n-1) ordered pairs and P(a pair collide) = $\frac{1}{m}$ due to universal hash function,  E($\sum_x$ $\sum_{x \ne y}$ $C_{xy}$) $\le$ $\frac{n(n-1)}{m}$. Since m = n, $\frac{n(n-1)}{m}$ = n-1. Hence, E(total number of ordered pairs of colliding keys) $\le$ n + n - 1 $\le$ 2n  
+    
+    \item We should note that sum of all arrays is the same as total number of ordered pairs of collision keys plus the size of the primary array. Hence P((sum of all array sizes) > 5n) = P((sum of all secondary array sizes) > 4n) = P(total number of ordered pairs of collision keys > 4n). Since in c, we proved that E(total number of ordered pairs of collision keys) $\le$ 2n, according to Markov's theorem, P(total number of ordered pairs of collision keys > 4n) < $\frac{1}{2}$. Hence, P((sum of all array sizes) > 5n) < $\frac{1}{2}$ 
+\end{enumerate}
+
+\end{numedquestion}
+
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

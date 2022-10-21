@@ -1,0 +1,175 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{13} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+According to the lecture, Prob(some bin has $\le$ k balls) $\le$ m * ${(\frac{n}{m})}^k$ * $\frac{1}{k!}$. We want to make this probability less than $\frac{1}{n(1+2l)!}$ so that with this probability, k $\ge$ 1+2l
+\\
+\\
+Step1: we have  m * ${(\frac{n}{m})}^k$ * $\frac{1}{k!}$ $\le$ $\frac{1}{n(1+2l)!}$
+\\
+Step2: Hence, we have ${(\frac{m}{n})}^k$ * k! $\ge$ mn(1+2l)!
+\\
+Step3: Since m $\ge$ ${n}^{1+\frac{1}{l}}$, we have ${n}^{\frac{k}{l}}$ * k! $\ge$ ${n}^{2+\frac{1}{l}}$ * (1+2l)!
+\\
+Step4: The above can be simplified to ${n}^{\frac{k}{l}}$ * k! $\ge$ ${n}^{\frac{2l+1}{l}}$ * (1+2l)!
+\\
+Hence, k $\ge$ (1+2l)
+\\
+
+Hence, we proved that the max load is at most 1 + 2l with probability greater than 1 - $\frac{1}{n(1+2l)!}$
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+First, we show k! $\ge$ ${(\frac{k}{2})}^{\frac{k}{2}}$\\
+Since k! = k(k-1)(k-2)....($\frac{k}{2}$)($\frac{k}{2}$-1)....(1), we know k! $\ge$ k(k-1)(k-2)....($\frac{k}{2}$). Since there are $\frac{k}{2}$ terms in k(k-1)(k-2)....($\frac{k}{2}$) and the terms are decreasing from k all the way to $\frac{k}{2}$, we have k! $\ge$ ${\frac{k}{2}} ^\frac{k}{2} $  \\
+
+
+If m = n, Prob(some bin has $\le$ k balls) $\le$ $\frac{1}{k!}$ $\le$ $\frac{1}{k^\frac{k}{2}}$, using the property we just proved.\\
+Step1: Choose $\alpha = 8$, so we have $k = \frac{8log(n)}{log(log(n))}$. and $\frac{k}{2} = \frac{4log(n)}{log(log(n))}$.\\
+Step 2: Using L'Hôpital's rule, we can prove that $log(n) \ge (log(log(n)))^2$: $\lim_{n \to +\infty} \frac{log(n)}{(log(log(n))^2} = \lim_{n \to +\infty} \frac{log(n)}{2(log(log(n))} = +\infty$. Therefore, $64(log(n))^2 \ge log(n) * (log(log(n)) ^ 2$, which impiles $\frac{64(log(n))^2}{(log(log(n)))^2} \ge log(n)$.\\ Step3: Taking square root for both sides, we get $k \ge \sqrt{log(n)}$. \\
+Step4: Therefore, $k^\frac{k}{2} \ge (\sqrt{log(n)})^\frac{4log(n)}{log(log(n))} = log(n)^\frac{2log(n)}{log(log(n))} = 2^{2log(n)}$, using the property that $x^{\frac{1}{log(x)}} = 2$ for all x. Choose the base of the logarithms as 2. Then, $2^{2log(n)} = n^2$. \\
+Therefore, Prob(some bin has $\ge$ k balls) $\le 1 - n * \frac{1}{n^2} = \frac{1}{n}$.
+
+\end{numedquestion}
+
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

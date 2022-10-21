@@ -1,0 +1,206 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{11} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+\textbf{introduction:} We can construct a directed bipartite graph for this problem. There is a source vertex for each professor and a destination vertex for each committee. There is a virtual source s that has an edge to every source vertex. There is also a virtual sink t that has an edge from every destination vertex. The source vertices and destination vertices have the following properties:
+\begin{enumerate}
+    \item There is a forward edge from a source vertex p to a destination vertex c if p is a suitable and willing candidate for the committee c. The cost of this edge is the price p asks for to be on the committee c. If p asks 1000 Galleons, the cost would be 1000. If p asks -1000 Galleons, the cost would be -1000. The capacity of a forward edge is 1. If p asks infinity Galleons to be on a committee c, there is no edge between p and c.  
+    \item Each forward edge from p to c also has a backward edge from c to p, with capacity to be the negative value of that of the forward edge. The cost of this edge is also the negative cost the forward edge 
+    \item A forward edge from p to c is valid if p.balance and c.balance are both larger than 0. A backward edge from c to p is valid if p.balance $\leq$ 3 and c.balance $\leq$ number of professors required.  
+    \item Each source has a balance of 3, symbolising each professor can only be on 3 committees
+    \item The balance of a destination vertex equals to the number of professors required to be on the committee.
+    \item One unit of flow represents an assignment of a professor to a committee. 
+ 
+    \item At the end of our algorithm, we would want the sum of destination vertices' balance to be 0
+\end{enumerate}
+\textbf{Algorithm}: We would like to use algorithms for min-cost max-flow problems to solve this problem. When finding a path in the following algorithm, besides considering whether the capacity of an edge is positive, we also consider whether an edge is valid or not, as defined above in introduction. Below is the pseudocode for the algorithm, note s and t are the virtual source and virtual sink we defined above
+\begin{lstlisting}
+    function minCost(G):
+        totalCost = 0
+        edges = {}
+        While there is a valid augmenting path between s and t:
+            e = valid path from s to t with min-cost
+            take e and route 1 unit of flow
+            totalCost = totalCost + e.cost
+            //update the residual graph
+            if e is a forward edge from p to c:
+                p.balance = p.balance - 1
+                c.balance = c.balance - 1
+                e.capacity  = e.capacity - 1
+                edges = edges + e
+            if e is a backward edge from c to p:
+                p.balance = p.balance + 1
+                c.balance = c.balance - 1
+                e.capacity = e.capacity + 1
+                edges = edges - the forward version of e
+        
+        if sum of balances of all committee vertices == 0:
+            return edges
+        else:
+            return "Cannot satisfy Prof.Dumbledore"
+\end{lstlisting}
+\textbf{Correctness:} The algorithm is essentially a modified version of the min-cost max-flow algorithm covered in class. In the algorithm, We ensured that every time we add a flow, we are adding from the path with minimum cost. We also ensured that we only take a path if it is valid, as defined in the introduction section. Also, whenever we find a min-cost path, we update the balance and capacity of vertices p and c such that the balance of c denotes how many professors are still needed to make that committee full, and the balance of p is how many committee positions are still available for each professor, which must be greater than or equal to zero to make sure the path is valid. In the end, we check if the result assignment satisfies the requirement that each committee is full by checking the remaining balance for each committee. This guarantees that we only report a valid assignment.  \\
+
+\textbf{Analysis}: Since the cost could be negative, we need to use bellman-ford to find the min-cost path. We essentially used the algorithm introduced in the slide for finding the min-cost max-flow, therefore, the total time for our algorithm is O($m^2 logn$)
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+We prove this using induction on the size of V\\
+\textbf{Base Case:} The base case is when |V| = 2, meaning there is only s and t in the graph, obviously, the minimum (s,t)cut is \{\{s\},\{t\}\}. Hence, either \{\{s\},V $\backslash$\{s\}\} or \{\{t\},V $\backslash$\{t\}\} is the minimum (s,t) cut\\
+\textbf{Induction Hypothesis:} The hypothesis is that, when |V| = k, we can find a pair of (s,t) such that either \{\{s\},V $\backslash$\{s\}\} or \{\{t\},V $\backslash$\{t\}\} is the minimum (s,t) cut\\
+\textbf{Inductive Step:} Now we need to prove when |V| = k+1, we can find a pair of (s,t) such that either \{\{s\},V $\backslash$\{s\}\} or \{\{t\},V $\backslash$\{t\}\} is the minimum (s,t) cut. \\
+Let's consider the case when |V| = k and \{\{s\},V $\backslash$\{s\}\} is the minimum (s,t)cut. Now, |V| = k + 1, we have added a vertex v to the graph. There are two cases
+\begin{enumerate}
+    \item If there is no edge between s and v, obviously we should group v with other vertices that are not s, since by doing this, we will not add number of edges to the cut. Hence, the minimum cut in this case is still \{\{s\},V $\backslash$\{s\}\} 
+    \item If there is an edge between s and v and there are some edges between v and some vertices other than s, there are two cases 
+    \begin{enumerate}
+        \item if the number of v's edges $\leq$ the value of current min-(s,t) cut, we can make v to be the new "s" in the new graph. Hence, in the new graph, the value of \{\{new s\},V $\backslash$\{new s\}\} will be the number of v's edges. Since v's edges $\leq$ the value of minimum (old s,t) cut, \{\{new s\},V $\backslash$\{new s\}\} is the minimum (new s, t)cut. 
+        \item otherwise, we should also group v with other vertices that are not s, since this only adds 1 to the value of the minimum cut, otherwise we need to add at least 1 to the value. Hence, it makes \{\{s\},V $\backslash$\{s\}\} still the min-(s,t) cut after adding v
+    \end{enumerate}
+    
+    \item If v only has an edge with s, then we can make v to be the new "s" in the new graph with |V| = k + 1. Then for the new graph, we can still find a pair of s and t such that the min-(s,t) cut is still \{\{s\},V $\backslash$\{s\}\}, which is equals to 1.    
+\end{enumerate}
+The reasoning is the same for the case when when |V| = k and \{\{t\},V $\backslash$\{t\}\} is the minimum (s,t)cut.\\
+Therefore with induction, we proved that there always exists a s and t such that either \{\{s\},V $\backslash$\{s\}\} or \{\{t\},V $\backslash$\{t\}\} is the min-(s,t) cut
+\end{numedquestion}
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

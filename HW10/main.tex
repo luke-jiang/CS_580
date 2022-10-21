@@ -1,0 +1,202 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{10} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+\textbf{introduction:} We can first use DFS to find the strongly connected component of s, call it C. If u and t are both in C, then there is a path from s to t, via u. If not, then there is no such a path. If there is a path, we can perform DFS twice, first to find a path between s and u, then to find a path from u to t. The answer is the combination of the two paths \\
+
+\textbf{Algorithm}: below is the pseudocode for the algorithm
+\begin{lstlisting}
+    C = empty graph
+    function findC(G,s):
+        //this function find the strongly connected component of s
+        for all unvisited neighbour v of s:
+            mark v as visited
+            add v and v-s to C
+            findC(G,v)
+    
+    function find(G,s,t,p):
+        //this function find a path between two vertices s and t
+        //p is a list of vertices visited from s to t
+        
+        for all unvisited neighbour v of s:
+            mark v as visited
+            p' = add v to p
+            if v == t:
+                print all vertices in p'
+                return p'
+            else:
+                find(G,v,t,p')
+                
+    function findPath(G,s,u,t):
+        C = DFS to find the Strongly connected component of s
+        path1 = use DFS to find a path between s and u in C
+        path2 = use DFS to find a path between u and t in C
+        return path1 + path2
+\end{lstlisting}
+\textbf{Correctness:} First we find the strongly connected component to ensure that we can indeed find a path from s to t via u. Then we find path between s and u and u to t. So if s can reach u and u can reach t, then s can reach t via u. \\
+
+\textbf{Analysis}: Since we essentially used DFS three times for this algorithm, the total running time is O(V+E)
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+\textbf{introduction:} We can first transform the directed graph G(V,E) to a bipartite graph G'(\{V1,V2\},E') in the following manner: for each vertex v in V of G, we create a vertex v1 $\in$ V1 and a vertex v2 $\in$ V2. For each directed edge v $\rightarrow$ w $\in$ E, we create an edge v1 $\rightarrow$ w2 $\in$ E'. Now the problem of finding a cycle cover is boiled down to find a perfect matching for the bipartite G'. We can use the Ford-Fulkerson algorithm to find a perfect matching. We can add a virtual source s and a virtual sink t to G'. s has en edge to every vertex in V1 and t has an edge from every vertex in V2. We assign each edge in G' with capacity equal to 1. If the maximum flow is equal to the number of vertices in V1, then there is a perfect matching. We will explain the reason for this in the "correctness" section. Let's look at the algorithm first \\
+
+\textbf{Algorithm:} 
+\begin{lstlisting}
+        
+    function findCycle(G):
+        construct the G'(V1, V2, E) graph as described above
+        // we use Ford-Fulkerson to find a perfect matching in G'
+        E' <- Perfect-Matching(G', |V|)
+        if E' is empty:  report no cycle found
+        for each edge (u1, v2) in G':
+            report (u, v) as part of the cycle
+            
+
+
+\end{lstlisting}
+\textbf{Correctness:} The correctness of this algorithm is equivalent to proving that a disjoint-cycle exists in G iff there is a perfect matching in G'. Suppose such a matching (called M) exists and Mg is the sub-graph reconstructed from M. Therefore, Mg contains all the vertices and a subset of edges in G. From the definition of perfect matching, for each u1 $\in$ V1, there exists a unique matching vertex v2 $\in$ V2. This edge (u1, v2) corresponds to the edge (u, v) in Mg. Since M is a one-to-one mapping, each vertex in V1 has out-degree of 1 and each vertex in V2 has in-degree of 1. This implies that in Mg, each vertex has in-degree = 1 and out-degree = 1, which is only possible if Mg is a disjoint-cycle. Since Mg in G, G has a disjoint cycle whose edges are the edges of Mg. \\
+
+\textbf{Analysis:} This algorithm takes O(n+m) time to construct G'; $O(m^2 * n)$ time to find a perfect matching; and O(m) time to report edges in the cycle. Therefore, the total running time is $O(m^2 * n)$. \\
+\end{numedquestion}
+
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}

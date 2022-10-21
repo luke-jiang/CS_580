@@ -1,0 +1,264 @@
+\documentclass[11pt]{exam}
+\newcommand{\myname}{Sihao Yin, Yuxuan Jiang} %Write your name in here
+
+\newcommand{\myUCO}{0028234022, 0028440468} %write your UCO in here
+
+\newcommand{\myhwtype}{Homework}
+\newcommand{\myhwnum}{12} %Homework set number
+\newcommand{\myclass}{CS580}
+\newcommand{\mylecture}{}
+\newcommand{\mysection}{}
+\usepackage{listings}
+% Prefix for numedquestion's
+\newcommand{\questiontype}{Question}
+
+% Use this if your "written" questions are all under one section
+% For example, if the homework handout has Section 5: Written Questions
+% and all questions are 5.1, 5.2, 5.3, etc. set this to 5
+% Use for 0 no prefix. Redefine as needed per-question.
+\newcommand{\writtensection}{0}
+
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage{enumerate}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usepackage{wrapfig}
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{centernot}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\card}{\vert}{\vert}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\pagestyle{empty}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\newcounter{questionCounter}
+\newcounter{partCounter}[questionCounter]
+
+\newenvironment{namedquestion}[1][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.2in}%
+        \noindent{\bf #1}%
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{numedquestion}[0]{%
+	\stepcounter{questionCounter}%
+    \vspace{.2in}%
+        \ifx\writtensection\undefined
+        \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+        \else
+          \if\writtensection0
+          \noindent{\bf \questiontype \; \arabic{questionCounter}. }%
+          \else
+          \noindent{\bf \questiontype \; \writtensection.\arabic{questionCounter} }%
+        \fi
+    \vspace{0.3em} \hrule \vspace{.1in}%
+}{}
+
+\newenvironment{alphaparts}[0]{%
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+}{\end{enumerate}}
+
+\newenvironment{arabicparts}[0]{%
+  \begin{enumerate}[label=\textbf{\arabic{questionCounter}.\arabic*})]
+}{\end{enumerate}}
+
+\newenvironment{questionpart}[0]{%
+  \item
+}{}
+
+\newcommand{\answerbox}[1]{
+\begin{framed}
+\vspace{#1}
+\end{framed}}
+
+\pagestyle{head}
+
+\headrule
+\header{\textbf{\myclass\ \mylecture\mysection}}%
+{\textbf{\myname\ (\myUCO)}}%
+{\textbf{\myhwtype\ \myhwnum}}
+
+\begin{document}
+\thispagestyle{plain}
+\begin{center}
+  {\Large \myclass{} \myhwtype{} \myhwnum} \\
+  \myname{} (\myUCO{}) \\
+  \today
+\end{center}
+
+
+%Here you can enter answers to homework questions
+
+\begin{numedquestion}
+\begin{enumerate}[a]
+    \item Suppose we have a graph G, we can construct a graph G' by adding a vertex v, which has edges to all vertices in G. Hence, as long as there is a s-t Hamiltonian path in G, there will be a Hamiltonian circle in G', because with the help of v, we can reach back at s via v from t. This can be done in polynomial time since there are only N edges and 1 vertex that need to be added 
+    
+    \item Given a undirected graph G, we can construct a directed graph G' as follows: for each edge in G, we construct two edges in G' that go in the opposite direction. Hence, if there is an undirected Hamiltonian cycle in G, there will also be a Hamiltonian cycle in G'. If there is a directed Hamiltonian cycle in G', there will also be a undirected Hamiltonian cycle in G. The construction of G' can be done in polynomial time because there are only N edges 
+    
+    \item Given a directed graph G, we can construct a undirected graph G as follows: for each vertex v in G, we create 3 vertices v',v'',v''' in G' and there will be edges (v',v'') and (v'',v'''). For each edge u$\rightarrow$v in G, we create an edge (u''',v') to G'. This can be done in polynomial time.
+    If there is a Hamiltonian cycle in G, a Hamilton cycle in G' will look like v1',v1'',v1''',v2',v2'',v2'''......
+    If there is a Hamiltonian cycle in G', the Hamiltonian cycle in G is determined by the positions of vi'' in G'. Since vi'' in G' is preceded by vi' and succeeded by vi''',  if the Hamiltonian cycle in G' looks like v1'',v2'',v3'',...., then the  Hamiltonian cycle in G will look like v1,v2,v3....
+    
+    \item First, we can use a) to deduce directed Hamiltonian path to directed Hamiltonian cycle. Then we can use c) to deduce directed Hamiltonian cycle to undirected Hamiltonian cycle. If we can deduce undirected Hamiltonian cycle to undirected Hamiltonian path in polynomial time, we can find a polynomial time reduction from directed Hamiltonian path to undirected Hamiltonian path since all the aforementioned reductions are in polynomial time. We give the polynomial time reduction from undirected Hamiltonian cycle to undirected Hamiltonian path. 
+    
+    Given a undirected graph G, we can construct a graph G' as follows: First we copy all vertices to G', then for one random vertex v in G, we create a copy v' of it in G'. v' in G' has all the edges v has in G.Then in G', we add two vertices u and u'. We also add two edges u-v and u'-v' in G' This can be done in polynomial time 
+    
+    If there is a Hamiltonian cycle in G, there will be a Hamiltonian path u-u' in G'. If there is a Hamiltonian path u-u' in G', we can also see that there must be a Hamiltonian cycle in G. Note the only Hamiltonian path in G' must be the path u-u', since u is only connected to v and u' is only connected to v'. 
+    
+    Hence, with the above, we have found a polynomial time reduction from directed Hamiltonian path to undirected Hamiltonian path.
+\end{enumerate}
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+To prove a problem is at least hard as SAT, we can try to prove they are NP-hard, since SAT is a NP. 
+\begin{enumerate}[a]
+    \item A spanning tree visits every node. We can see that a spanning tree with only 2 leaves is exactly a Hamiltonian path problem. If we can find a Hamiltonian path from one leaf to the other, we found a spanning tree with two leaves. Hence, we can reduct the problem of finding a spanning tree with two leaves in G from finding a Hamiltonian path in G'. Since finding a Hamiltonian path is at least hard as SAT, finding a spanning tree with 2 leaves is also as hard as SAT.   
+    
+    \item A spanning tree with a degree at most 2 is also a Hamiltonian path problem. We can reduct the problem of finding a spanning tree with a degree at most 2 from the Hamiltonian path problem, since the source and destination would have a degree of 1 while all other nodes have a degree of 2. Same as above, since finding a Hamiltonian path is at least hard as SAT, finding a spanning tree with degree at most 2 is also as hard as SAT. 
+    
+    \item We reduct this problem from the undirected Hamiltonian path problem. Given a undirected G, we construct a undirected graph G' as follows:
+    \begin{enumerate}
+        \item First copy G to G'
+        \item In G', we add a vertex v that is connected to all other vertices. 
+        \item In G', we add 41 vertices u1,u2,...u41, each with an edge to v
+          
+    \end{enumerate}
+    G' can be constructed in polynomial time 
+    
+    If G has a Hamiltonian path s-t, then in G' t is also connected to v and v is connected to u1 to u41. The spanning tree in G' will be formed by all vertices in G and the 41 added vertices. This spanning tree has 42 leaf vertices, namely s and the 41 added vertices 
+    
+    If there is a spanning tree in G' with 42 leaves, we know s is the leaf vertex that is not a ui. We also know t is the only neighbour of v in the spanning tree that is not a leaf vertex. A path from s to t must visit all the vertices in G.  
+    
+    As before, since we can reduct this problem from the Hamiltonian path problem, this problem as at least as hard as SAT
+    
+    \item We reduct this problem from the undirected Hamiltonian path problem. Given a undirected G with a s-t Hamiltonian path, we construct a undirected graph G' as follows:
+    \begin{enumerate}
+        \item First copy G to G'
+        \item In G', we add 40 edges to each vertex, each of these 42 edges connect a vertex in G to a newly created vertex, thus each vertex in G' has a degree at most 42
+    \end{enumerate}
+    G' can be constructed in polynomial time 
+    
+    If G has a Hamiltonian path s-t, we can find a spanning tree in G' by simply applying step 2 in the above construction of G'. Then, each vertex in G' can be either a leaf, which is the newly created vertex, or it could be a vertex on the Hamiltonian path. If it is a vertex on the path, it has a degree at most 42.  
+    
+    If there is a spanning tree in G', the vertices that form a Hamiltonian path in G will be those vertices in the spanning tree in G' that is not a leaf node.  
+    
+    Since we can use the algorithm of this problem to solve the problem of Hamiltonian path, This problem is at least as hard as
+    Hamiltonian path, which is as hard as SAT.
+\end{enumerate}
+\end{numedquestion}
+
+\pagebreak
+\begin{numedquestion}
+\begin{enumerate}[a]
+    \item read it
+    \item Given a undirected graph G, we construct a graph G' as follows: for any inter-connected 3 vertices, we add k-3 vertices, so that these k vertices are connected to each other. We can do this in polynomial time
+    
+    If G is 3-colourable, then in G', we can assign each of the added k-3 vertices with a new colour that is not one of the original 3 colours
+    
+    If G' is k-colourable, then we know G is 3-colourable. 
+    \item We give the algorithm as follows \\
+    \\
+    \textbf{Introduction:} We use the idea of a "gadget" as introduced by Jeff. The different is, instead of a gadget with 3 vertices, we use a gadget with k vertices. These k vertices are connected to each other, each of a different colour. We incorporate the gadget in the original graph. We call the new graph G'. Note, at the beginning, the gadget is not connected to any vertex in G. For each vertex v in G, we do the following
+    \begin{enumerate}
+        \item we connect it to k-1 vertices in the gadget, so when colouring, v has the colour of the one un-connected vertex in the gadget.
+        \item We feed G' to the subroutine.
+        \begin{enumerate}
+            \item If G' turns out to be k-colourable, we keep the v-1 edges in G', which symbolising us remembering the colour choice for v.
+            \item  If G' turns out not to be k-colourable, we try to connect v with another k-1 vertices in the gadget and redo the test.
+        \end{enumerate}
+        \item It is guaranteed for at least one test to pass, since we know the original graph is k-colourable.  
+    \end{enumerate}
+    We perform the aforementioned transformation to each vertex in the original graph, one by one. In the end, we will get a k-coloring\\
+    \\
+    \textbf{Algorithm:}
+    \begin{lstlisting}
+    function kColour(G):
+        G' = incorporate the gadget into G
+        //this is the mapping of colour and vertices in G
+        colour = new Map 
+        for each vertex v in G:
+            for each vertex u in gadget:
+                G' = connect v with vertices in the gadget other than u
+                if subroutine(G') == 'TRUE':
+                    keep the k-1 edges in G'
+                    colour[v] = colour[u]
+                    break 
+                else:
+                    delete the k-1 edges in G'
+                    continue 
+                
+    \end{lstlisting}
+    \\
+    \textbf{Correctness:} At each step we assign the colour of a vertex to be the colour of the unselected vertex in the gadget. We use the subroutine to guarantee after this assignment, graph G is still k-colourable. Therefore, after each successful assignment, graph G will always remain k-colourable, until we found a mapping for all vertices.\\
+    \\
+    \textbf{Analysis:} We traverse each vertex in G. For each vertex, at most we need to try all vertices in the gadget. For each try, we call the subroutine, which has polynomial time. Suppose we can represent the runtime of the routine as f(n), the total time needed is O(f(n)+k*n*f(n)). As we can see, this time is polynomial.  
+    \item Since 2-coloring is the same as determining if the graph is bipartite or not, we can solve 2-coloring in polynomial time. We give the pseudocode below 
+    \begin{lstlisting}
+    function 2Color(G):
+        randomly colour a vertex with red
+        colour neighbours of red vertex blue
+        colour neighbours of blue vertex red
+        while there still exists un-coloured vertices:
+            if its neighbours are all red:
+                colour it blue
+            if its neighbours are all blue:
+                colour it red
+            if some neighbour blue and some neighbour red:
+                return "Not 2-colourable"
+    \end{lstlisting}
+    The above algorithm will find a 2-coloring if the graph is indeed 2-colourable. It will return not 2-colourable otherwise.//
+    The above algorithm is also polynomial, since it colours each vertex exactly once. 
+\end{enumerate}
+\end{numedquestion}
+% if you do not solve some of the questions use this command to increment counter
+%\setcounter{questionCounter}{4}
+%\begin{numedquestion}
+%  Questions 2 and 3 were not solved, this is an answer to question 5.
+%\end{numedquestion}
+
+
+% if questions have subparts, use this command
+%\pagebreak
+%\begin{numedquestion}
+%  Use the alphaparts environment to for letters.
+%  \begin{alphaparts}
+%    \item Part a
+%    \item Part b
+%    \item Part c
+%  \end{alphaparts}
+%\end{numedquestion}
+
+
+%\begin{numedquestion}
+%  Using the \texttt{description} environment is a great way to typeset induction proofs!
+%  \begin{description}
+%    \item[Base Case:]
+%      Here I have my base case.
+%    \item[Induction Hypothesis:]
+%      Assume things to make proof work. 
+%    \item[Induction Step:]
+%      Prove all the things.
+%  \end{description}
+
+%  Therefore, we have proven the claim by induction on in the \texttt{description} environment.
+%\end{numedquestion}
+
+
+
+\end{document}
